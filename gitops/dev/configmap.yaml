@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-node-config
+data:
+  GREETING: "hello from argocd (dev)"
+  LOG_LEVEL: "debug"

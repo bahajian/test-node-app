@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-node-app
+  labels: { app: test-node-app }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: test-node-app }
+  template:
+    metadata:
+      labels: { app: test-node-app }
+    spec:
+      imagePullSecrets:
+        - name: nexus-pull            # created out-of-band (holds Nexus creds; not in git)
+      containers:
+        - name: app
+          image: nexus.ibstorm.com/test-node-app:v1   # tag overridden by kustomization images:
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef: { name: test-node-config }   # ConfigMap -> env
+            - secretRef:    { name: test-node-secret }    # Vault secret (via ESO) -> env
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits:   { cpu: 500m, memory: 256Mi }

@@ -1,0 +1,23 @@
+# Example ArgoCD Application for the dev environment.
+# Apply after confirming repoURL/branch and ArgoCD project.
+#   kubectl apply -f gitops/argocd-application-dev.example.yaml   (or create it in the ArgoCD UI)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-node-app-dev
+  namespace: argocd                 # where ArgoCD runs
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/bahajian/test-node-app.git
+    targetRevision: master
+    path: gitops/dev                # Kustomize app lives here
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: test-node-app
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

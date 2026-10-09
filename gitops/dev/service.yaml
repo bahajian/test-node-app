@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-node-app
+spec:
+  selector: { app: test-node-app }
+  ports:
+    - port: 80
+      targetPort: 8080
