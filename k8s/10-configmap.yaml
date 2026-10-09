@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-node-config
+  namespace: test-node-app
+data:
+  GREETING: "hello from nexus + k8s"
+  LOG_LEVEL: "debug"

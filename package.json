@@ -1,0 +1,12 @@
+{
+  "name": "test-node-app",
+  "version": "1.0.0",
+  "description": "Node.js app on k8s: image from Nexus, config from ConfigMap, secret from Vault via ESO",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

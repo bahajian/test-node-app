@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-node-app
+  namespace: test-node-app
+  labels: { app: test-node-app }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: test-node-app }
+  template:
+    metadata:
+      labels: { app: test-node-app }
+    spec:
+      imagePullSecrets:
+        - name: nexus-pull                 # pulls from nexus.ibstorm.com
+      containers:
+        - name: app
+          image: nexus.ibstorm.com/test-node-app:v1
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef: { name: test-node-config }    # ConfigMap -> env
+            - secretRef:    { name: test-node-secret }     # Vault secret -> env
+          readinessProbe:
+            httpGet: { path: /healthz, port: 8080 }
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits:   { cpu: 500m, memory: 256Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-node-app
+  namespace: test-node-app
+spec:
+  selector: { app: test-node-app }
+  ports:
+    - port: 80
+      targetPort: 8080
